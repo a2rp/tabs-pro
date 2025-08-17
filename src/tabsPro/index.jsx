@@ -4,17 +4,10 @@ import "./styles.css";
 import Tabs from "./Tabs.jsx";
 import useLocalStorage from "./useLocalStorage.js";
 
-/**
- * We persist only plain data in localStorage:
- *   { tabs: Array<{ id, label, type: "static"|"note", closable, value? }>, activeId }
- * On render, we attach the appropriate tab.panel render functions.
- */
-
 export default function TabsProDemo() {
     const [persisted, setPersisted, resetPersisted] = useLocalStorage("tabspro:data", getInitialData());
     const [activeId, setActiveId] = useState(persisted.activeId);
 
-    // Ensure activeId always points to an existing tab
     React.useEffect(() => {
         const stillExists = persisted.tabs.some((t) => t.id === activeId);
         if (!stillExists) {
@@ -23,12 +16,10 @@ export default function TabsProDemo() {
         }
     }, [persisted.tabs, activeId]);
 
-    // Keep activeId in localStorage
     React.useEffect(() => {
         setPersisted((prev) => ({ ...prev, activeId }));
     }, [activeId, setPersisted]);
 
-    // Helpers to read/update note values inside persisted data
     function getNoteValueById(id) {
         const target = persisted.tabs.find((t) => t.id === id);
         return target?.value || "";
@@ -40,7 +31,6 @@ export default function TabsProDemo() {
         }));
     }
 
-    // Attach render functions to plain data (this is NOT persisted)
     const tabsWithRender = useMemo(() => {
         return persisted.tabs.map((tabData) => {
             if (tabData.type === "note") {
@@ -60,7 +50,6 @@ export default function TabsProDemo() {
                 };
             }
 
-            // Static tabs by id
             if (tabData.id === "overview") {
                 return {
                     ...tabData,
@@ -103,7 +92,6 @@ export default function TabsProDemo() {
                 };
             }
 
-            // Fallback if an unknown static tab sneaks in
             return { ...tabData, render: () => null };
         });
     }, [persisted.tabs]);
@@ -166,7 +154,6 @@ export default function TabsProDemo() {
     );
 }
 
-/** ---------- persisted shape (no functions) ---------- */
 function getInitialData() {
     return {
         tabs: [

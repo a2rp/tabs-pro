@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-/** Tiny hook: JSON get/set with a reset helper */
 export default function useLocalStorage(key, initialValue) {
     const firstRenderRef = useRef(true);
     const [value, setValue] = useState(() => {

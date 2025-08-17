@@ -1,26 +1,19 @@
 import React, { useEffect, useId, useMemo, useRef } from "react";
 
-/**
- * Accessible Tabs (uncontrolled by default)
- * - Keyboard: ArrowLeft/ArrowRight, Home/End
- * - ARIA roles/attributes wired correctly
- * - Optional close and add buttons handled by parent
- */
 export default function Tabs({
-    tabs,                 // [{id,label,closable?:boolean}]
+    tabs,
     activeId,
-    onChange,             // (id) => void
-    onCloseRequest,       // (id) => void
-    onAddRequest,         // () => void
+    onChange,
+    onCloseRequest,
+    onAddRequest,
 }) {
     const tablistId = useId();
-    const buttonRefs = useRef({}); // map of id => ref
+    const buttonRefs = useRef({});
 
     const tabIds = useMemo(() => tabs.map((t) => t.id), [tabs]);
     const activeIndex = Math.max(0, tabIds.indexOf(activeId));
 
     useEffect(() => {
-        // keep map tidy
         for (const key of Object.keys(buttonRefs.current)) {
             if (!tabIds.includes(key)) delete buttonRefs.current[key];
         }
