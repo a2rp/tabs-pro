@@ -18,13 +18,17 @@ export default function useLocalStorage(key, initialValue) {
         }
         try {
             localStorage.setItem(key, JSON.stringify(value));
-        } catch {}
+        } catch {
+            /* Storage may be unavailable, so the in-memory state remains usable. */
+        }
     }, [key, value]);
 
     const reset = () => {
         try {
             localStorage.removeItem(key);
-        } catch {}
+        } catch {
+            /* Storage may be unavailable, but the in-memory state can still reset. */
+        }
         setValue(initialValue);
     };
 

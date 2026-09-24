@@ -1,5 +1,5 @@
 {
-    "name": "frontend",
+    "name": "tabs-pro",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -14,6 +14,7 @@
     "dependencies": {
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-icons": "^5.7.0",
         "react-toastify": "^11.0.5",
         "styled-components": "^6.1.19"
     },
@@ -27,5 +28,6 @@
         "eslint-plugin-react-refresh": "^0.4.19",
         "globals": "^16.0.0",
         "vite": "^6.3.5"
-    }
+    },
+    "homepage": "https://a2rp.github.io/tabs-pro/"
 }
