@@ -11,6 +11,7 @@ Tabs Pro is a reusable React tabs component with accessible keyboard navigation,
 - Local storage persistence with reset support
 - Responsive tab strip with clear active states
 - GitHub Pages deployment with Vite
+- Floating go-to-top control with smooth scrolling
 
 ## Tech stack
 

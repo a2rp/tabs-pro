@@ -1,5 +1,17 @@
-import { createElement } from "react";
-import { FiCodepen, FiCoffee, FiFacebook, FiGithub, FiGlobe, FiHeart, FiLinkedin, FiMail, FiStar, FiYoutube } from "react-icons/fi";
+import { createElement, useEffect, useState } from "react";
+import {
+    FiArrowUp,
+    FiCodepen,
+    FiCoffee,
+    FiFacebook,
+    FiGithub,
+    FiGlobe,
+    FiHeart,
+    FiLinkedin,
+    FiMail,
+    FiStar,
+    FiYoutube,
+} from "react-icons/fi";
 import TabsPro from "./tabsPro";
 
 const socialLinks = [
@@ -11,6 +23,7 @@ const socialLinks = [
     { label: "YouTube", href: "https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1", icon: FiYoutube },
     { label: "Email", href: "mailto:ash.ranjan09@gmail.com", icon: FiMail },
 ];
+
 const supportLinks = [
     { label: "Support", href: "https://a2rp-donation-page.netlify.app/", icon: FiHeart },
     { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/a2rp", icon: FiCoffee },
@@ -28,6 +41,7 @@ function Header() {
         </a>
     </header>;
 }
+
 function LinkGroup({ links }) {
     return <div className="footer-links" aria-label="External links">
         {links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
@@ -36,6 +50,7 @@ function LinkGroup({ links }) {
         </a>)}
     </div>;
 }
+
 function Footer() {
     return <footer className="site-footer"><div className="footer-inner">
         <p>Copyright &copy; {new Date().getFullYear()}{" "}
@@ -44,9 +59,32 @@ function Footer() {
         <div className="footer-groups"><LinkGroup links={socialLinks} /><LinkGroup links={supportLinks} /></div>
     </div></footer>;
 }
-const App = () => <div className="app-shell">
-    <Header />
-    <main className="page-content"><TabsPro /></main>
-    <Footer />
-</div>;
+
+const App = () => {
+    const [showGoTop, setShowGoTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => setShowGoTop(window.scrollY > 360);
+
+        handleScroll();
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    return <div className="app-shell">
+        <Header />
+        <main className="page-content"><TabsPro /></main>
+        <Footer />
+        {showGoTop && <button className="go-top-button" type="button" onClick={scrollToTop}
+            aria-label="Scroll to top" title="Scroll to top">
+            <FiArrowUp aria-hidden="true" />
+        </button>}
+    </div>;
+};
+
 export default App;
