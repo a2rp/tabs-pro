@@ -4,6 +4,8 @@ import { FiPlus, FiX } from "react-icons/fi";
 export default function Tabs({ tabs, activeId, onChange, onCloseRequest, onAddRequest }) {
     const tablistId = useId();
     const buttonRefs = useRef({});
+    const previousActiveIdRef = useRef(activeId);
+    const previousTabIdsRef = useRef([]);
     const tabIds = useMemo(() => tabs.map((tab) => tab.id), [tabs]);
     const activeIndex = Math.max(0, tabIds.indexOf(activeId));
 
@@ -13,8 +15,27 @@ export default function Tabs({ tabs, activeId, onChange, onCloseRequest, onAddRe
         }
     }, [tabIds]);
 
+    useEffect(() => {
+        const activeChanged = previousActiveIdRef.current !== activeId;
+        const tabRemoved = previousTabIdsRef.current.some((id) => !tabIds.includes(id));
+        if (activeChanged || tabRemoved) {
+            buttonRefs.current[activeId]?.focus();
+        }
+        previousActiveIdRef.current = activeId;
+        previousTabIdsRef.current = tabIds;
+    }, [activeId, tabIds]);
+
     const focusButtonAt = (index) => buttonRefs.current[tabIds[index]]?.focus();
     const handleKeyDown = (event) => {
+        const activeTab = tabs[activeIndex];
+        if (event.key === "Delete") {
+            if (activeTab?.closable) {
+                event.preventDefault();
+                onCloseRequest?.(activeTab.id);
+            }
+            return;
+        }
+
         if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
         event.preventDefault();
         const lastIndex = tabIds.length - 1;
@@ -26,34 +47,35 @@ export default function Tabs({ tabs, activeId, onChange, onCloseRequest, onAddRe
     };
 
     return <div>
-        <div className="tablist" role="tablist" aria-label="Primary tabs" id={tablistId} onKeyDown={handleKeyDown}>
-            {tabs.map((tabItem) => <button
-                key={tabItem.id}
-                ref={(node) => { if (node) buttonRefs.current[tabItem.id] = node; }}
-                className="tab-button"
-                role="tab"
-                id={"tab-" + tabItem.id}
-                aria-selected={activeId === tabItem.id ? "true" : "false"}
-                aria-controls={"panel-" + tabItem.id}
-                tabIndex={activeId === tabItem.id ? 0 : -1}
-                onClick={() => onChange(tabItem.id)}
-                title={tabItem.label}
-            >
-                <span className="tab-title">{tabItem.label}</span>
-                {tabItem.closable && <span
-                    role="button"
-                    aria-label={"Close " + tabItem.label}
-                    className="tab-close"
-                    tabIndex={0}
-                    onClick={(event) => { event.stopPropagation(); onCloseRequest?.(tabItem.id); }}
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault(); event.stopPropagation(); onCloseRequest?.(tabItem.id);
+        <div className="tabbar">
+            <div className="tablist" role="tablist" aria-label="Primary tabs" id={tablistId} onKeyDown={handleKeyDown}>
+                {tabs.map((tabItem) => <button
+                    key={tabItem.id}
+                    ref={(node) => { if (node) buttonRefs.current[tabItem.id] = node; }}
+                    className="tab-button"
+                    type="button"
+                    role="tab"
+                    id={"tab-" + tabItem.id}
+                    aria-selected={activeId === tabItem.id}
+                    aria-controls={"panel-" + tabItem.id}
+                    aria-keyshortcuts={tabItem.closable ? "Delete" : undefined}
+                    tabIndex={activeId === tabItem.id ? 0 : -1}
+                    onClick={(event) => {
+                        if (event.target.closest?.(".tab-close") && tabItem.closable) {
+                            onCloseRequest?.(tabItem.id);
+                            return;
                         }
+                        onChange(tabItem.id);
                     }}
-                ><FiX aria-hidden="true" /></span>}
-            </button>)}
-            {onAddRequest && <button className="add-tab" aria-label="Add note tab" title="Add note tab" onClick={onAddRequest}>
+                    title={tabItem.label}
+                >
+                    <span className="tab-title">{tabItem.label}</span>
+                    {tabItem.closable && <span className="tab-close" aria-hidden="true" title="Close tab">
+                        <FiX />
+                    </span>}
+                </button>)}
+            </div>
+            {onAddRequest && <button type="button" className="add-tab" aria-label="Add note tab" title="Add note tab" onClick={onAddRequest}>
                 <FiPlus aria-hidden="true" />
             </button>}
         </div>

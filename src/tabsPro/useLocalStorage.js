@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function useLocalStorage(key, initialValue) {
+export default function useLocalStorage(key, initialValue, validate = () => true) {
     const firstRenderRef = useRef(true);
     const [value, setValue] = useState(() => {
         try {
             const raw = localStorage.getItem(key);
-            return raw != null ? JSON.parse(raw) : initialValue;
+            if (raw == null) return initialValue;
+            const parsed = JSON.parse(raw);
+            return validate(parsed) ? parsed : initialValue;
         } catch {
             return initialValue;
         }

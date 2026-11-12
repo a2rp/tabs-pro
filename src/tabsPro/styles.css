@@ -81,8 +81,9 @@ button {
 }
 button:hover { border-color: var(--brand); color: var(--brand-2); box-shadow: 0 0 0 3px rgba(140, 169, 255, .1); }
 input, textarea { font: inherit; color: inherit; }
+.tabbar { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .tablist {
-    display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 8px;
+    flex: 1; min-width: 0; display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 8px;
     align-items: center; overflow-x: auto; scrollbar-width: thin; padding: 10px;
     border-bottom: 1px solid var(--border);
     background: linear-gradient(to right, var(--card), transparent 40%), linear-gradient(to left, var(--card), transparent 40%) right;

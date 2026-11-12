@@ -7,6 +7,7 @@ Tabs Pro is a reusable React tabs component with accessible keyboard navigation,
 ## Features
 
 - Keyboard navigation with arrow keys, Home and End
+- Press Delete to close the selected closable tab
 - Add and close note tabs
 - Local storage persistence with reset support
 - Responsive tab strip with clear active states
